@@ -11,6 +11,15 @@ CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEA
 SELENIUM_STANDALONE_VERSION=3.8.1
 SELENIUM_SUBDIR=$(echo "$SELENIUM_STANDALONE_VERSION" | cut -d"." -f-2)
 
+# Install Xvfb
+sudo apt-get install -y xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic xvfb x11-apps
+
+# Install JDK 8 from offical website
+wget {link} ~/jdk-8u161-linux-x64.tar.gz
+sudo mv ~/jdk-8u161-linux-x64.tar.gz /opt
+
+sudo apt-get install lrzsz zip unzip
+
 # Remove existing downloads and binaries so we can start from scratch.
 sudo apt-get remove google-chrome-stable
 rm ~/selenium-server-standalone-*.jar
@@ -41,3 +50,29 @@ wget -N http://selenium-release.storage.googleapis.com/$SELENIUM_SUBDIR/selenium
 sudo mv -f ~/selenium-server-standalone-$SELENIUM_STANDALONE_VERSION.jar /usr/local/bin/selenium-server-standalone.jar
 sudo chown root:root /usr/local/bin/selenium-server-standalone.jar
 sudo chmod 0755 /usr/local/bin/selenium-server-standalone.jar
+
+#############################################################################################
+
+#!/usr/bin/env bash
+
+# Run Chrome via Selenium Server
+start-chrome() {
+    nohup xvfb-run --server-args="-screen 0 1200x840x8" java -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver -jar /usr/local/bin/selenium-server-standalone.jar > /dev/null 2>&1 &
+}
+
+start-chrome-debug() {
+    xvfb-run java -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver -jar /usr/local/bin/selenium-server-standalone.jar -debug
+}
+
+# Run Chrome Headless
+start-chrome-headless() {
+    chromedriver --url-base=/wd/hub
+}
+
+# Start
+start-chrome
+# start-chrome-debug
+# start-chrome-headless
+
+# /etc/rc.local
+su - user -c '########'
