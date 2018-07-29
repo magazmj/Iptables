@@ -37,7 +37,7 @@ def gen_png_from_plist(plist_filename, png_filename):
         rect_on_big = big_image.crop(box)
 
         if v['rotated']:
-            rect_on_big = rect_on_big.rotate(90)
+            rect_on_big = rect_on_big.rotate(90, expand=True)
 
         result_image = Image.new('RGBA', sizelist, (0,0,0,0))
         if v['rotated']:
